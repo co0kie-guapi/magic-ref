@@ -11,6 +11,7 @@ import org.co0k1e.magicRef.enums.IgnoreClassEnums;
 import org.co0k1e.magicRef.util.LambdaUtil;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
@@ -152,8 +153,9 @@ public class MagicRef<T> {
                 throw new NullPointerException(ownerClass.getName() + "在忽略列表，无法生成默认值");
             }
             //通过反射实例化（须有无参构造，否则会抛异常）
+            Constructor<?> constructor = ownerClass.getDeclaredConstructor();
             //noinspection unchecked
-            return (T) ownerClass.newInstance();
+            return (T) constructor.newInstance();
 
         }else{
             return t;
@@ -173,7 +175,7 @@ public class MagicRef<T> {
             if (IgnoreClassEnums.isInList(clazz)){
                 throw new NullPointerException(clazz.getName() + "在忽略列表，无法生成默认值");
             }
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         }
         return object;
 
