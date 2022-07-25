@@ -1,5 +1,7 @@
 package org.co0k1e.magicRef.executor;
 
+import org.co0k1e.magicRef.pojo.FrameDataInfo;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,10 @@ import java.io.Serializable;
  */
 public interface Executor extends Serializable {
 
-    void doExecute();
+    /**
+     * 执行代码
+     * @return
+     */
+    FrameDataInfo doExecute();
 
 }
