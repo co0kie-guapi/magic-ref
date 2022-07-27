@@ -1,18 +1,13 @@
 package org.co0k1e.magicRef.executor;
 
 
-import cn.hutool.core.collection.CollectionUtil;
+
 import org.co0k1e.magicRef.executor.postProcessor.ExecutorPostProcessor;
 import org.co0k1e.magicRef.pojo.FrameDataInfo;
 import org.co0k1e.magicRef.util.LambdaUtil;
-
 import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 执行器抽象类
@@ -33,8 +28,8 @@ public abstract class AbstractExecutor implements Executor, ExecutorPostProcesso
      */
     @Override
     public FrameDataInfo doExecute() {
-        Method IFunction = getMethod(function);
-        //获取参数
+//        Method IFunction = getMethod(function);
+        //获取参数类型
         List<Class<?>> classes = Arrays.asList(LambdaUtil.getParamsTypes(function, 0));
         //处理参数
         handleParams(param,classes);
@@ -43,31 +38,29 @@ public abstract class AbstractExecutor implements Executor, ExecutorPostProcesso
         //获取返回值类型
         Class<?> returnType = LambdaUtil.getReturnType(function);
         FrameDataInfo.FrameDataInfoBuilder builder = FrameDataInfo.builder();
-        builder.returnClazz(returnType);
+
+        builder.returnClazz(returnType)
+                .methodName(LambdaUtil.getMethodName(function))
+                .paramList(param)
+                .paramTypeList(classes);
 
         try {
-            result = executeFunction(IFunction, param);
+            result = executeFunction(function, param);
         }catch (Exception e){
             builder.exception(e)
                     .successMark(false);
         }
         builder.returnValue(result);
-
-
-
-
         return doPostProcess(builder.build());
     }
 
-
-    protected abstract Object executeFunction(Method IFunction,Object... params);
-
     /**
-     * 通过函数接口获取方法
-     * @param function 可序列化的函数式接口
+     * 执行
+     * @param IFunction
+     * @param params
      * @return
      */
-    protected abstract Method getMethod(Serializable function);
+    protected abstract Object executeFunction(Serializable IFunction,Object... params);
 
 
 

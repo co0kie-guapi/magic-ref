@@ -1,8 +1,10 @@
 package org.co0k1e.magicRef.util;
 
+
 import lombok.SneakyThrows;
 import org.co0k1e.magicRef.core.SerializedLambda;
 import org.co0k1e.magicRef.core.SetAccessibleAction;
+import sun.misc.LRUCache;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -12,10 +14,9 @@ import java.util.List;
 
 /**
  * lambda工具类
- * @author yanghx
+ * @author co0k1e
  */
 public class LambdaUtil {
-
 
     /**
      * 获取表达式的返回值类型
@@ -48,8 +49,7 @@ public class LambdaUtil {
             String className = nativeClassName.substring(1).replace('/', '.');
             classes.add(Class.forName(className));
         }
-
-        return (Class<?>[]) classes.toArray();
+        return  classes.toArray(new Class[0]);
     }
 
     /**
@@ -67,24 +67,54 @@ public class LambdaUtil {
         return Class.forName(className);
     }
 
+    /**
+     * 获取方法名称
+     * @param lambda
+     * @return
+     */
+    @SneakyThrows
+    public static String getMethodName(Serializable lambda){
+        Serializable serializedLambda = getSerializedLambda(lambda);
+        if (serializedLambda instanceof java.lang.invoke.SerializedLambda){
+            java.lang.invoke.SerializedLambda returnTypeByReflect  = (java.lang.invoke.SerializedLambda) serializedLambda;
+            return returnTypeByReflect.getImplMethodName();
+        }else{
+            SerializedLambda returnTypeByReflect = (SerializedLambda) serializedLambda;
+            return returnTypeByReflect.getImplMethodName();
+        }
+    }
+
 
     /**
-     * 获取方法签名的jni字符串
+     * 获取方法类型的jni字符串
      * @param lambda
      * @return
      */
     @SneakyThrows
     private static String getInstantiatedType(Serializable lambda){
-        Method method = lambda.getClass().getDeclaredMethod("writeReplace");
-        java.lang.invoke.SerializedLambda returnTypeByReflect = getReturnTypeByReflect(method,lambda);
-        if (returnTypeByReflect != null){
+        Serializable serializedLambda = getSerializedLambda(lambda);
+        if (serializedLambda instanceof java.lang.invoke.SerializedLambda){
+            java.lang.invoke.SerializedLambda returnTypeByReflect  = (java.lang.invoke.SerializedLambda) serializedLambda;
             return returnTypeByReflect.getInstantiatedMethodType();
         }else{
-            SerializedLambda resolve = SerializedLambda.resolve(lambda);
-            return resolve.getInstantiatedMethodType();
+            SerializedLambda returnTypeByReflect = (SerializedLambda) serializedLambda;
+            return returnTypeByReflect.getInstantiatedMethodType();
         }
-
     }
+
+
+    @SneakyThrows
+    private static Serializable getSerializedLambda(Serializable lambda){
+        Method method = lambda.getClass().getDeclaredMethod("writeReplace");
+        java.lang.invoke.SerializedLambda returnTypeByReflect = getReturnTypeByReflect(method,lambda);
+        if (returnTypeByReflect != null ){
+            return returnTypeByReflect;
+        }else{
+            SerializedLambda resolve = SerializedLambda.resolve(lambda);
+            return resolve;
+        }
+    }
+
 
 
 
