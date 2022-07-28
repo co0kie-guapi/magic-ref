@@ -19,7 +19,7 @@ public abstract class AbstractExecutableParam extends AbstractExecutor {
                 FrameDataInfo dataInfo = ((Executor) o).doExecute();
                 paramList.set(i,dataInfo.getReturnValue());
             }
-            customTransferParam(paramList.get(i),paramTypeList.get(i));
+            paramList.set(i,customTransferParam(paramList.get(i),paramTypeList.get(i)));
         }
     }
 

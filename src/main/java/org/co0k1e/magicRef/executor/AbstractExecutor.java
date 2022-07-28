@@ -45,7 +45,7 @@ public abstract class AbstractExecutor implements Executor, ExecutorPostProcesso
                 .paramTypeList(classes);
 
         try {
-            result = executeFunction(function, param);
+            result = executeFunction(function,classes ,param);
         }catch (Exception e){
             builder.exception(e)
                     .successMark(false);
@@ -56,12 +56,13 @@ public abstract class AbstractExecutor implements Executor, ExecutorPostProcesso
     }
 
     /**
-     * 执行
-     * @param IFunction
+     * 执行函数
+     * @param iFunction
+     * @param paramsType
      * @param params
      * @return
      */
-    protected abstract Object executeFunction(Serializable IFunction,Object... params);
+    protected abstract Object executeFunction(Serializable iFunction,List<Class<?>>paramsType ,Object... params);
 
 
 
