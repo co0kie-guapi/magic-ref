@@ -1,5 +1,7 @@
 package org.co0k1e.magicRef.executor;
 
+import org.co0k1e.magicRef.pojo.FrameDataInfo;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,12 @@ public abstract class AbstractExecutableParam extends AbstractExecutor {
     protected void handleParams(List<Object> paramList, List<Class<?>> paramTypeList) {
         //循环处理
         for (int i = 0; i < paramList.size(); i++) {
-
+            Object o = paramList.get(i);
+            if (o instanceof Executor){
+                FrameDataInfo dataInfo = ((Executor) o).doExecute();
+                paramList.set(i,dataInfo.getReturnValue());
+            }
+            customTransferParam(paramList.get(i),paramTypeList.get(i));
         }
     }
 

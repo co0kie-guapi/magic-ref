@@ -49,6 +49,7 @@ public abstract class AbstractExecutor implements Executor, ExecutorPostProcesso
         }catch (Exception e){
             builder.exception(e)
                     .successMark(false);
+            e.printStackTrace();
         }
         builder.returnValue(result);
         return doPostProcess(builder.build());
