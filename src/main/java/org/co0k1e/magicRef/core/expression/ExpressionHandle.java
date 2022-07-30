@@ -1,7 +1,15 @@
 package org.co0k1e.magicRef.core.expression;
 
-import org.co0k1e.magicRef.core.expression.pojo.enums.OperatorEnums;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.sun.deploy.util.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.co0k1e.magicRef.IFunction.ThreeFunction;
+import org.co0k1e.magicRef.core.expression.pojo.enums.OperatorEnums;
+import org.co0k1e.magicRef.core.expression.strategy.CalculateStrategy;
+import org.co0k1e.magicRef.core.expression.strategy.IntegerCalculateStrategy;
+
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,19 +74,44 @@ public class ExpressionHandle {
     }
 
     /**
-     * 先写死做个测试
+     * 计算表达式
      */
-    public Object calculate(){
+    public  Object calculate(){
         List<String> polish = transferPolishExpr(this.expression);
-        Stack<String> calculateStack = new Stack();
+        //获取策略
+        Stack<Object> calculateStack = new Stack();
         for (String item : polish) {
             if (!OperatorEnums.isOperator(item)){
                 calculateStack.push(item);
             }else{
-                //发现运算符
+                //是运算符
+                OperatorEnums operatorEnums = OperatorEnums.obtainEnum(item);
+                //todo 替换为策略工厂
+                IntegerCalculateStrategy integerCalculateStrategy = new IntegerCalculateStrategy();
+                //弹栈需要计算的参数
+                Object left = calculateStack.pop();
+                Object right = calculateStack.pop();
+                //解析参数如果是个符号变量后替换变量
+                if (left instanceof String && ((String) left).startsWith("$")){
+                    int indexFromSymbol = getIndexFromSymbol((String) left);
+                    if (!CollectionUtil.isEmpty(paramList) && indexFromSymbol < paramList.size() ) {
+                        left = paramList.get(indexFromSymbol);
+                    }
+                }
+
+                if (right instanceof String && ((String) right).startsWith("$")){
+                    int indexFromSymbol = getIndexFromSymbol((String) right);
+                    if (!CollectionUtil.isEmpty(paramList) && indexFromSymbol < paramList.size() ) {
+                        right = paramList.get(indexFromSymbol);
+                    }
+                }
+
+                ThreeFunction<CalculateStrategy, Object, Object,Object> function = operatorEnums.getFunction();
+                Object apply = function.apply(integerCalculateStrategy, left, right);
+                calculateStack.push(apply);
             }
         }
-        return null;
+        return calculateStack.pop();
     }
 
 
@@ -139,6 +172,25 @@ public class ExpressionHandle {
 
 
     }
+
+    /**
+     * 解析符号获取参数索引值
+     * @param symbol
+     * @return
+     */
+    private  Integer getIndexFromSymbol(String symbol){
+        String substring = symbol.substring(1);
+        if (NumberUtils.isDigits(substring)) {
+            Integer index = Integer.valueOf(substring);
+            return index;
+        }else{
+            //todo 抛参数异常
+            throw new InvalidParameterException();
+        }
+
+    }
+
+
 
 
 

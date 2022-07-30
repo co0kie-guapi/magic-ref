@@ -29,10 +29,10 @@ public enum OperatorEnums {
 
 
 
-    private ThreeFunction<CalculateStrategy,?,?,?> function;
+    private ThreeFunction<CalculateStrategy,Object,Object,Object> function;
     private String expr;
 
-    OperatorEnums(ThreeFunction<CalculateStrategy,?,?,?> function,String expr){
+    OperatorEnums(ThreeFunction<CalculateStrategy,Object,Object,Object> function,String expr){
         this.function = function;
         this.expr = expr;
     }
