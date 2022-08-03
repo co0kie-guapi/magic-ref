@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 /**
  * 魔术指针 （待完善）
- * @author yanghx
+ * @author co0kie
  */
 public class MagicRef<T> {
 
