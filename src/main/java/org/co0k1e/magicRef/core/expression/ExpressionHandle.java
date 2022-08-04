@@ -2,12 +2,11 @@ package org.co0k1e.magicRef.core.expression;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.sun.deploy.util.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.co0k1e.magicRef.IFunction.ThreeFunction;
 import org.co0k1e.magicRef.core.expression.pojo.enums.OperatorEnums;
 import org.co0k1e.magicRef.core.expression.strategy.CalculateStrategy;
-import org.co0k1e.magicRef.core.expression.strategy.IntegerCalculateStrategy;
+import org.co0k1e.magicRef.core.expression.strategy.CalculateStrategyFactory;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -76,7 +75,7 @@ public class ExpressionHandle {
     /**
      * 计算表达式
      */
-    public  Object calculate(){
+    public Object calculate(){
         List<String> polish = transferPolishExpr(this.expression);
         //获取策略
         Stack<Object> calculateStack = new Stack();
@@ -86,8 +85,8 @@ public class ExpressionHandle {
             }else{
                 //是运算符
                 OperatorEnums operatorEnums = OperatorEnums.obtainEnum(item);
-                //todo 替换为策略工厂
-                IntegerCalculateStrategy integerCalculateStrategy = new IntegerCalculateStrategy();
+                //根据类型获取计算策略
+                CalculateStrategy strategyInstance = CalculateStrategyFactory.getStrategyInstance(this.targetClass);
                 //弹栈需要计算的参数
                 Object left = calculateStack.pop();
                 Object right = calculateStack.pop();
@@ -107,7 +106,7 @@ public class ExpressionHandle {
                 }
 
                 ThreeFunction<CalculateStrategy, Object, Object,Object> function = operatorEnums.getFunction();
-                Object apply = function.apply(integerCalculateStrategy, left, right);
+                Object apply = function.apply(strategyInstance, left, right);
                 calculateStack.push(apply);
             }
         }

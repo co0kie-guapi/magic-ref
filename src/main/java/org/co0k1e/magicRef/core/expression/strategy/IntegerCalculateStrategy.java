@@ -6,40 +6,32 @@ import java.math.BigDecimal;
  * 整数类型计算策略实现类
  * @author co0kie
  */
-public class IntegerCalculateStrategy implements CalculateStrategy,Transverter{
+public class IntegerCalculateStrategy extends AbstractCalculateStrategy{
 
     @Override
-    public Object add(Object left, Object right) {
-        Integer lInt = (Integer) transvert(left);
-        Integer RInt = (Integer) transvert(right);
-        return lInt + RInt;
+    public Integer addImpl(Object left, Object right) {
+        return ((Integer)left) + ((Integer)right);
     }
 
     @Override
-    public Object off(Object left, Object right) {
-        Integer lInt = (Integer) transvert(left);
-        Integer RInt = (Integer) transvert(right);
-
-        return lInt - RInt;
+    public Integer offImpl(Object left, Object right) {
+        return ((Integer)left) - ((Integer)right);
     }
 
     @Override
-    public Object multiply(Object left, Object right) {
-        Integer lInt = (Integer) transvert(left);
-        Integer RInt = (Integer) transvert(right);
-
-        return lInt * RInt;
+    public Integer multiplyImpl(Object left, Object right) {
+        return ((Integer)left) * ((Integer)right);
     }
 
     @Override
-    public Object divide(Object left, Object right) {
-        return null;
+    public Integer divideImpl(Object left, Object right) {
+        return   ((Integer)left) / ((Integer)right);
     }
 
     @Override
-    public Object transvert(Object object) {
+    public Integer transvert(Object object) {
         if (object instanceof Integer){
-            return object;
+            return (Integer) object;
         }else if (object instanceof String){
             return Integer.valueOf((String) object);
         }else if (object instanceof Double){
