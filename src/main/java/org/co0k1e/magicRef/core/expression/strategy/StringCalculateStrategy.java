@@ -6,7 +6,7 @@ import org.co0k1e.magicRef.MagicRef;
  * 字符串策略类
  * @author co0kie
  */
-public class StringCalculategy extends AbstractCalculateStrategy {
+public class StringCalculateStrategy extends AbstractCalculateStrategy {
     @Override
     public Object addImpl(Object left, Object right) {
         return (String) left + (String)right ;

@@ -14,6 +14,7 @@ public class CalculateStrategyFactory {
     static {
         strategyMap.put(Integer.class,new IntegerCalculateStrategy());
         strategyMap.put(BigDecimal.class,new DecimalCalculateStrategy());
+        strategyMap.put(String.class,new StringCalculateStrategy());
     }
 
     /**
