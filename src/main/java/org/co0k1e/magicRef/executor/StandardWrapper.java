@@ -35,6 +35,67 @@ public interface StandardWrapper {
      */
     Object andThen(SFunction<?,?> function);
 
+    /**
+     * 条件处理的执行器建造
+     * @param condition
+     * @param invoker
+     * @param var1
+     * @return
+     */
+    Object andThenWithCondition(Boolean condition,SInvoker<?,?,?> invoker,Object var1);
+
+
+    /**
+     * 条件处理的的执行器建造
+     * @param condition
+     * @param function
+     * @param var1
+     * @param var2
+     * @return
+     */
+    Object andThenWithCondition(Boolean condition,SThreeFunction<?,?,?,?> function,Object var1,Object var2);
+
+
+    /**
+     * 条件处理的执行器建造
+     * @param condition
+     * @param function
+     * @return
+     */
+    Object andThenWithCondition(Boolean condition,SFunction<?,?> function);
+
+
+
+    /**
+     * 条件处理的执行器建造
+     * @param condition
+     * @param invoker
+     * @param var1
+     * @return
+     */
+    Object andThenWithCondition(Executor condition,SInvoker<?,?,?> invoker,Object var1);
+
+
+
+    /**
+     * 条件处理的的执行器建造
+     * @param condition
+     * @param function
+     * @param var1
+     * @param var2
+     * @return
+     */
+    Object andThenWithCondition(Executor condition,SThreeFunction<?,?,?,?> function,Object var1,Object var2);
+
+
+    /**
+     * 条件处理的的执行器建造
+     * @param condition
+     * @param function
+
+     * @return
+     */
+    Object andThenWithCondition(Executor condition,SFunction<?,?> function);
 
 
 
